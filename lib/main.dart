@@ -15,7 +15,7 @@ void _onSelectNotification(String? payload) {
   if (payload == 'details_page') {
     // Si le payload est "details_page", naviguer vers la page des détails
     MyApp.navigatorKey.currentState?.push(
-      MaterialPageRoute(builder: (context) => const DetailsPage()),
+      MaterialPageRoute(builder: (context) => DetailsPage()),
     );
   }
 }
