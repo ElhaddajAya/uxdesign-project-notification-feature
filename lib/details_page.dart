@@ -21,6 +21,8 @@ class _DetailsPageState extends State<DetailsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Détails de l'Absence"),
+        backgroundColor: Colors.blue[700],
+        foregroundColor: Colors.white,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
