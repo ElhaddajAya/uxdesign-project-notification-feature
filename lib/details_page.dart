@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -38,6 +40,9 @@ class _DetailsPageState extends State<DetailsPage>
 
   @override
   Widget build(BuildContext context) {
+    File? _selectedFile;
+    String? _fileName;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -177,19 +182,54 @@ class _DetailsPageState extends State<DetailsPage>
                         ),
                         const SizedBox(width: 8),
                         IconButton(
-                          icon: Icon(Icons.attach_file_outlined,
-                              color: Colors.blue[700], size: 26),
-                          onPressed: () async {
-                            // Simulate file attachment
-                            FilePickerResult? result = await FilePicker.platform.pickFiles();
+                            icon: Icon(Icons.attach_file_outlined,
+                                color: Colors.blue[700], size: 26),
+                            onPressed: () async {
+                              // Simulate file attachment
+                              FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-                            if (result != null) {
-                              PlatformFile file = result.files.first;
-                              print('File attached: ${file.name}');
+                              if (result != null) {
+                                PlatformFile file = result.files.first;
+                                setState(() {
+                                  _selectedFile = File(file.path!);
+                                  _fileName = file.name;
+                                });
+                                print('File attached: ${file.name}');
+                                
+                                // Display a Toast message
+                                Fluttertoast.showToast(
+                                  msg: "Fichier attaché: ${file.name}",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.CENTER,
+                                  timeInSecForIosWeb: 2,
+                                  backgroundColor: Colors.blue[700],
+                                  textColor: Colors.white,
+                                  fontSize: 16.0
+                                );
+                              } else {
+                                // User canceled the picker
+                                Fluttertoast.showToast(
+                                  msg: "Aucun fichier sélectionné",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 2,
+                                  backgroundColor: const Color.fromARGB(255, 255, 121, 111),
+                                  textColor: Colors.white,
+                                  fontSize: 16.0
+                                );
+                              }
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.send,
+                                color: Colors.blue[700], size: 26),
+                            onPressed: () {
+                              // Action pour envoyer la justification
+                              print('Justification envoyée : ${justificationController.text}');
                               
                               // Display a Toast message
                               Fluttertoast.showToast(
-                                msg: "Fichier attaché: ${file.name}",
+                                msg: "Justification envoyée",
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 2,
@@ -197,47 +237,19 @@ class _DetailsPageState extends State<DetailsPage>
                                 textColor: Colors.white,
                                 fontSize: 16.0
                               );
-                            } else {
-                              // User canceled the picker
-                              Fluttertoast.showToast(
-                                msg: "Aucun fichier sélectionné",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 2,
-                                backgroundColor: Colors.red,
-                                textColor: Colors.white,
-                                fontSize: 16.0
-                              );
-                            }
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.send,
-                              color: Colors.blue[700], size: 26),
-                          onPressed: () {
-                            // Action pour envoyer la justification
-                            print('Justification envoyée : ${justificationController.text}');
-    
-                            // Display a Toast message
-                            Fluttertoast.showToast(
-                              msg: "Justification envoyée",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 2,
-                              backgroundColor: const Color.fromARGB(255, 138, 193, 249),
-                              textColor: Colors.white,
-                              fontSize: 16.0
-                            );
 
-                            // Clear the input field
-                            justificationController.clear();
-                            // Show the initial button 
-                            setState(() {
-                              isJustifying = false;
-                              _animationController.reverse();
-                            });
-                          },
-                        ),
+                              // Clear the input field
+                              justificationController.clear();
+
+                              // Show the initial button "Justifier..."
+                              setState(() {
+                                isJustifying = false;
+                                _selectedFile = null;
+                                _fileName = null;
+                                _animationController.reverse();
+                              });
+                            },
+                          ),
                       ],
                     ),
                   )
