@@ -66,7 +66,6 @@ class _DetailsPageState extends State<DetailsPage> {
             ),
             SizedBox(height: 16),
             TextField(
-              controller: TextEditingController(text: justification),
               onChanged: (value) {
                 setState(() {
                   justification = value;

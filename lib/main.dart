@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:taalim_notify_app/details_page.dart';
 import 'package:taalim_notify_app/notification_service.dart';
+import 'package:taalim_notify_app/reminder_service.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Nécessaire pour les appels asynchrones avant runApp
+  WidgetsFlutterBinding.ensureInitialized();
   await NotificationService.initialize(onSelectNotification: _onSelectNotification);
+  await ReminderService.initialize(onSelectNotification: _onSelectNotification);
   runApp(const MyApp());
 }
 
@@ -13,6 +15,8 @@ void _onSelectNotification(String? payload) {
   print("Notification clicked with payload: $payload");
 
   if (payload == 'details_page') {
+    ReminderService.stopReminder(); // Arrête les rappels
+    
     // Si le payload est "details_page", naviguer vers la page des détails
     MyApp.navigatorKey.currentState?.push(
       MaterialPageRoute(builder: (context) => DetailsPage()),
