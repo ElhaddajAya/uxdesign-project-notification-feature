@@ -280,11 +280,7 @@ class _DetailsPageState extends State<DetailsPage>
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-<<<<<<< HEAD
         backgroundColor: Color(0xFFF3F4F9),
-=======
-        backgroundColor: Color.fromARGB(255, 249, 252, 255),
->>>>>>> 6d97b80572519dba5732cd1d09817bf51250b10b
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home, size: 26),
