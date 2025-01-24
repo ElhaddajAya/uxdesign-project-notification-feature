@@ -55,11 +55,11 @@ class ReminderService {
           summaryText: 'Voir les Détails',
         ),
         actions: <AndroidNotificationAction>[
-        AndroidNotificationAction(
-          'view_details', // Identifiant unique de l'action
-          'Voir les Détails', // Titre du bouton
-        ),
-      ],
+          AndroidNotificationAction(
+            'view_details', // Identifiant unique de l'action
+            'Voir les Détails', // Titre du bouton
+          ),
+        ],
       );
 
       const NotificationDetails notificationDetails =

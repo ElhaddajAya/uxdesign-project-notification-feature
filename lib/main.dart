@@ -52,35 +52,43 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      /*
       appBar: AppBar(
         title: const Text(
           'TAALIM Notify',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         backgroundColor: Colors.blue[700],
         foregroundColor: Colors.white,
       ),
+      */
       body: Center(
-        child: ElevatedButton(
-          child: const Text("Send Notification"),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue[700],
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-            textStyle: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/app_icon.png', height: 150),
+            const SizedBox(height: 20),
+            Text(
+              'Bienvenue à TAALIM Notify',
+              style: TextStyle(
+                fontSize: 20, 
+                fontWeight: FontWeight.bold, 
+                color: Colors.blueGrey.shade700
+              ),
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            elevation: 4,
-            shadowColor: Colors.blue[900],
-          ),
-          onPressed: () {
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(
+          Icons.notifications, 
+          color: Colors.white,
+        ),
+        backgroundColor: const Color(0xFF1976D2),
+        onPressed: () {
             NotificationService.showNotification();
           },
-        ),
       ),
     );
   }
