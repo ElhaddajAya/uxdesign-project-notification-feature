@@ -20,7 +20,10 @@ class _DetailsPageState extends State<DetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Détails de l'Absence"),
+        title: Text(
+          "Détails de l'Absence",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.blue[700],
         foregroundColor: Colors.white,
       ),
