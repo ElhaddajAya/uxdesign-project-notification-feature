@@ -100,10 +100,10 @@ class _DetailsPageState extends State<DetailsPage>
           children: [
             Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 35, // Augmentation de la taille de l'avatar
-                  backgroundColor: Colors.blue[100],
-                  child: const Icon(
+                  backgroundColor: Color.fromARGB(255, 207, 234, 255),
+                  child: Icon(
                     Icons.person,
                     size: 50, // Augmentation de la taille de l'icône
                     color: Color.fromARGB(255, 9, 60, 171),
@@ -162,6 +162,9 @@ class _DetailsPageState extends State<DetailsPage>
                             cursorColor: Colors.blue[700],
                             decoration: InputDecoration(
                               hintText: 'Justification',
+                              hintStyle: TextStyle(
+                                color: const Color.fromARGB(255, 126, 135, 139),
+                              ),
                               enabledBorder: OutlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Colors.blue.shade700),
@@ -211,7 +214,7 @@ class _DetailsPageState extends State<DetailsPage>
                                 Fluttertoast.showToast(
                                   msg: "Aucun fichier sélectionné",
                                   toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
+                                  gravity: ToastGravity.CENTER,
                                   timeInSecForIosWeb: 2,
                                   backgroundColor: const Color.fromARGB(255, 255, 121, 111),
                                   textColor: Colors.white,
@@ -231,10 +234,10 @@ class _DetailsPageState extends State<DetailsPage>
                               Fluttertoast.showToast(
                                 msg: "Justification envoyée",
                                 toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
+                                gravity: ToastGravity.CENTER,
                                 timeInSecForIosWeb: 2,
-                                backgroundColor: Colors.blue[700],
-                                textColor: Colors.white,
+                                backgroundColor: const Color.fromARGB(255, 201, 225, 244),
+                                textColor: Colors.blueGrey.shade700,
                                 fontSize: 16.0
                               );
 
@@ -276,6 +279,7 @@ class _DetailsPageState extends State<DetailsPage>
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color.fromARGB(255, 249, 252, 255),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home, size: 26),
@@ -304,7 +308,7 @@ class _DetailsPageState extends State<DetailsPage>
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(icon, color: Colors.blueGrey.shade700, size: 24), // Taille augmentée
+        Icon(icon, color: Colors.blueGrey.shade700, size: 24), 
         const SizedBox(width: 16),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -313,14 +317,14 @@ class _DetailsPageState extends State<DetailsPage>
               title,
               style: TextStyle(
                 color: Colors.blueGrey.shade700,
-                fontSize: 18, // Taille augmentée
+                fontSize: 18, 
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
               value,
               style: TextStyle(
-                fontSize: 16, // Taille augmentée
+                fontSize: 16, 
                 color: Colors.grey.shade600,
               ),
             ),
