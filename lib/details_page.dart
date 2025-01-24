@@ -17,6 +17,7 @@ class _DetailsPageState extends State<DetailsPage>
   TextEditingController justificationController = TextEditingController();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  bool _isInputEmpty = false;
 
   @override
   void initState() {
@@ -167,13 +168,11 @@ class _DetailsPageState extends State<DetailsPage>
                                 color: const Color.fromARGB(255, 126, 135, 139),
                               ),
                               enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.blue.shade700),
+                                borderSide: BorderSide(color: _isInputEmpty ? Colors.red : Colors.blue.shade700),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.blue.shade700),
+                                borderSide: BorderSide(color: _isInputEmpty ? Colors.red : Colors.blue.shade700),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               border: OutlineInputBorder(
@@ -185,52 +184,54 @@ class _DetailsPageState extends State<DetailsPage>
                           ),
                         ),
                         const SizedBox(width: 8),
-                        IconButton(
-                            icon: Icon(Icons.attach_file_outlined,
-                                color: Colors.blue[700], size: 26),
-                            onPressed: () async {
-                              // Simulate file attachment
-                              FilePickerResult? result = await FilePicker.platform.pickFiles();
+                      IconButton(
+                          icon: Icon(Icons.attach_file_outlined,
+                              color: Colors.blue[700], size: 26),
+                          onPressed: () async {
+                            // Simulate file attachment
+                            FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-                              if (result != null) {
-                                PlatformFile file = result.files.first;
-                                setState(() {
-                                  _selectedFile = File(file.path!);
-                                  _fileName = file.name;
-                                });
-                                print('File attached: ${file.name}');
-                                
-                                // Display a Toast message
-                                Fluttertoast.showToast(
-                                  msg: "Fichier attaché: ${file.name}",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.CENTER,
-                                  timeInSecForIosWeb: 2,
-                                  backgroundColor: Colors.blue[700],
-                                  textColor: Colors.white,
-                                  fontSize: 16.0
-                                );
-                              } else {
-                                // User canceled the picker
-                                Fluttertoast.showToast(
-                                  msg: "Aucun fichier sélectionné",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.CENTER,
-                                  timeInSecForIosWeb: 2,
-                                  backgroundColor: const Color.fromARGB(255, 255, 121, 111),
-                                  textColor: Colors.white,
-                                  fontSize: 16.0
-                                );
-                              }
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.send,
-                                color: Colors.blue[700], size: 26),
-                            onPressed: () {
-                              // Action pour envoyer la justification
-                              print('Justification envoyée : ${justificationController.text}');
+                            if (result != null) {
+                              PlatformFile file = result.files.first;
+                              setState(() {
+                                _selectedFile = File(file.path!);
+                                _fileName = file.name;
+                              });
+                              print('File attached: ${file.name}');
                               
+                              // Display a Toast message
+                              Fluttertoast.showToast(
+                                msg: "Fichier attaché: ${file.name}",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 2,
+                                backgroundColor: const Color.fromARGB(255, 201, 225, 244),
+                                textColor: Colors.blueGrey[700],
+                                fontSize: 16.0
+                              );
+                            } else {
+                              // User canceled the picker
+                              Fluttertoast.showToast(
+                                msg: "Aucun fichier sélectionné",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 2,
+                                backgroundColor: const Color.fromARGB(255, 255, 121, 111),
+                                textColor: Colors.white,
+                                fontSize: 16.0
+                              );
+                            }
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.send,
+                              color: Colors.blue[700], size: 26),
+                          onPressed: () {
+                            // Action pour envoyer la justification
+                            print('Justification envoyée : ${justificationController.text}');
+                            
+                            // check if input is empty
+                            if (!justificationController.text.isEmpty) {
                               // Display a Toast message
                               Fluttertoast.showToast(
                                 msg: "Justification envoyée",
@@ -251,9 +252,25 @@ class _DetailsPageState extends State<DetailsPage>
                                 _selectedFile = null;
                                 _fileName = null;
                                 _animationController.reverse();
+                                _isInputEmpty = false;
                               });
-                            },
-                          ),
+                            } else {
+                              setState(() {
+                                _isInputEmpty = true;
+                              });
+
+                              Fluttertoast.showToast(
+                                msg: "Veuillez saisir une justification",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 2,
+                                backgroundColor: const Color.fromARGB(255, 255, 121, 111),
+                                textColor: Colors.white,
+                                fontSize: 16.0
+                              );
+                            }
+                          },
+                        ),
                       ],
                     ),
                   )
