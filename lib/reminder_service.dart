@@ -38,9 +38,14 @@ class ReminderService {
   // Lancer les rappels périodiques
   static void startReminder(int studentId) {
     stopReminder();
-    print("ReminderService: Starting reminders every 2 hours for student ID: $studentId");
+    // Check if the current time is after 22:00
+    final now = DateTime.now();
+    if (now.hour >= 22) {
+      print("ReminderService: Reminders are not allowed after 22:00.");
+      return;  // break, no remiders allowed after 22:00
+    }
 
-    _reminderTimer = Timer.periodic(const Duration(seconds: 8), (timer) async {
+    _reminderTimer = Timer.periodic(const Duration(seconds: 10), (timer) async {
       Student student = students.firstWhere((student) => student.id == studentId);
 
       String message = 'Bonjour Mme Nadia! \nVotre enfant ${student.name} a manqué une séance aujourd\'hui à ${student.time}!';
