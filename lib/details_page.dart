@@ -76,10 +76,6 @@ class _DetailsPageState extends State<DetailsPage>
             icon: const Icon(Icons.more_vert, color: Colors.white, size: 26),
             itemBuilder: (context) => [
               const PopupMenuItem(
-                value: 1,
-                child: Text("Modifier l'absence"),
-              ),
-              const PopupMenuItem(
                 value: 2,
                 child: Text("Supprimer l'absence"),
               ),

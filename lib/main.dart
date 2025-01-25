@@ -53,7 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      /*
       appBar: AppBar(
         title: const Text(
           'TAALIM Notify',
@@ -62,7 +61,6 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.blue[700],
         foregroundColor: Colors.white,
       ),
-      */
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
