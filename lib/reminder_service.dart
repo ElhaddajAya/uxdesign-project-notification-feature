@@ -38,11 +38,11 @@ class ReminderService {
   // Lancer les rappels périodiques
   static void startReminder(int studentId) {
     stopReminder();
-    // Check if the current time is after 22:00 and before 8:00
+    // Check if the current time is after 22:00
     final now = DateTime.now();
-    if (now.hour >= 22 && now.hour < 8) {
+    if (now.hour >= 22) {
       print("ReminderService: Reminders are not allowed after 22:00.");
-      return;  // break, no remiders allowed after 22:00 and before 8:00
+      return;  // break, no remiders allowed after 22:00
     }
 
     _reminderTimer = Timer.periodic(const Duration(seconds: 10), (timer) async {
