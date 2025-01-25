@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:taalim_notify_app/student_model.dart';
 
 class ReminderService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
@@ -35,47 +36,47 @@ class ReminderService {
   }
 
   // Lancer les rappels périodiques
-  static void startReminder() {
-    stopReminder(); // Arrêter tout rappel précédent
-    print("ReminderService: Starting reminders every 10 seconds");
+  static void startReminder(int studentId) {
+    stopReminder();
+    print("ReminderService: Starting reminders every 2 hours for student ID: $studentId");
 
-    _reminderTimer = Timer.periodic(const Duration(seconds: 10), (timer) async {
-      print("ReminderService: Sending reminder notification");
+    _reminderTimer = Timer.periodic(const Duration(seconds: 8), (timer) async {
+      Student student = students.firstWhere((student) => student.id == studentId);
 
-      const AndroidNotificationDetails reminderDetails = AndroidNotificationDetails(
+      String message = 'Bonjour Mme Nadia! \nVotre enfant ${student.name} a manqué une séance aujourd\'hui à ${student.time}!';
+
+      AndroidNotificationDetails reminderDetails = AndroidNotificationDetails(
         'reminder_channel',
         'Reminder Channel',
         channelDescription: 'Canal des rappels pour l’application',
         importance: Importance.high,
         priority: Priority.high,
-        playSound: true, // Active le son
+        playSound: true,
         styleInformation: BigTextStyleInformation(
-          'Bonjour Mme Nadia! \nVotre enfant a manqué une séance aujourd\'hui à 10h30!',
+          message,
           contentTitle: '⚠️ Rappel : Absence non confirmée!',
           summaryText: 'Voir les Détails',
         ),
         actions: <AndroidNotificationAction>[
           AndroidNotificationAction(
-            'view_details', // Identifiant unique de l'action
-            'Voir les Détails', // Titre du bouton
+            'view_details',
+            'Voir les Détails',
           ),
         ],
       );
 
-      const NotificationDetails notificationDetails =
-          NotificationDetails(android: reminderDetails);
+      NotificationDetails notificationDetails = NotificationDetails(android: reminderDetails);
 
       await _notificationsPlugin.show(
         1, // ID unique pour le rappel
         '⚠️ Rappel : Absence non confirmée!',
-        'Bonjour Mme Nadia! \nVotre enfant a manqué une séance aujourd\'hui à 10h30!',
+        message,
         notificationDetails,
-        payload: 'details_page', // Action sur clic
+        payload: 'details_page_${student.id}', // Inclure l'ID de l'étudiant pour la page de détails
       );
     });
   }
 
-  // Arrêter les rappels
   static void stopReminder() {
     if (_reminderTimer != null) {
       _reminderTimer?.cancel();

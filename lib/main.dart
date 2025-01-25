@@ -11,16 +11,22 @@ void main() async {
 }
 
 void _onSelectNotification(String? payload) {
-  // Gère l'action de clic sur la notification
   print("Notification clicked with payload: $payload");
 
-  if (payload == 'details_page') {
-    ReminderService.stopReminder(); // Arrête les rappels
-    
-    // Si le payload est "details_page", naviguer vers la page des détails
-    MyApp.navigatorKey.currentState?.push(
-      MaterialPageRoute(builder: (context) => DetailsPage()),
-    );
+  if (payload != null && payload.startsWith('details_page_')) {
+    int studentId = int.parse(payload.split('_')[2]);
+
+    // Arrêter les rappels
+    ReminderService.stopReminder();
+
+    // Assurez-vous que la navigation est déclenchée après le rendu de l'UI
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      MyApp.navigatorKey.currentState?.push(
+        MaterialPageRoute(
+          builder: (context) => DetailsPage(studentId: studentId),
+        ),
+      );
+    });
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:taalim_notify_app/reminder_service.dart';
+import 'package:taalim_notify_app/student_model.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
@@ -32,38 +33,43 @@ class NotificationService {
   }
 
   static Future<void> showNotification() async {
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    Student student = Student.random();
+
+    String message = 'Bonjour Mme Nadia! \nVotre enfant ${student.name} a manqué une séance aujourd\'hui à ${student.time}!';
+    String contentTitle = '🔔 Absence détectée!';
+
+    final AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'main_channel',
       'Main Channel',
       channelDescription: 'Canal principal pour les notifications',
       importance: Importance.high,
       priority: Priority.high,
-      playSound: true, // Active le son
+      playSound: true,
       styleInformation: BigTextStyleInformation(
-        'Bonjour Mme Nadia! \nVotre enfant a manqué une séance aujourd\'hui à 10h30!',
-        contentTitle: '🔔 Absence détectée!',
+        message,
+        contentTitle: contentTitle,
         summaryText: 'Voir les Détails',
       ),
       actions: <AndroidNotificationAction>[
         AndroidNotificationAction(
-          'view_details', // Identifiant unique de l'action
-          'Voir les Détails', // Titre du bouton
+          'view_details',
+          'Voir les Détails',
         ),
       ],
     );
 
-    const NotificationDetails notificationDetails =
-        NotificationDetails(android: androidDetails);
+    final NotificationDetails notificationDetails = NotificationDetails(android: androidDetails);
 
     await _notificationsPlugin.show(
-      0, // ID unique de la notification principale
-      '🔔 Absence détectée!',
-      'Bonjour Mme Nadia! \nVotre enfant a manqué une séance aujourd\'hui à 10h30!',
+      0, 
+      contentTitle,
+      message,
       notificationDetails,
-      payload: 'details_page',
+      payload: 'details_page_${student.id}', 
     );
 
     // Démarrer les rappels
-    ReminderService.startReminder();
+    ReminderService.startReminder(student.id); 
   }
+
 }

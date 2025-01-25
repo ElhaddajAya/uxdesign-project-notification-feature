@@ -3,9 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:taalim_notify_app/student_model.dart';
 
 class DetailsPage extends StatefulWidget {
-  const DetailsPage({super.key});
+  final int studentId;
+
+  DetailsPage({required this.studentId});
+
 
   @override
   _DetailsPageState createState() => _DetailsPageState();
@@ -19,9 +23,14 @@ class _DetailsPageState extends State<DetailsPage>
   late Animation<double> _fadeAnimation;
   bool _isInputEmpty = false;
 
+  late Student student;
+
   @override
   void initState() {
     super.initState();
+    // Charger les données de l'étudiant en fonction de l'ID
+    student = students.firstWhere((student) => student.id == widget.studentId);
+
     // Initialisation de l'animation
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300), // Durée de l'animation
@@ -112,14 +121,14 @@ class _DetailsPageState extends State<DetailsPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '2287382',
+                      '${student.id}',
                       style: TextStyle(
                         fontSize: 16, // Augmentation de la taille
                         color: Colors.grey[600],
                       ),
                     ),
                     Text(
-                      'Kaoutar BENNOUR',
+                      '${student.name}',
                       style: TextStyle(
                         fontSize: 20, // Augmentation de la taille
                         fontWeight: FontWeight.bold,
@@ -127,7 +136,7 @@ class _DetailsPageState extends State<DetailsPage>
                       ),
                     ),
                     Text(
-                      '2ème Année - Lycée',
+                      '${student.grade}',
                       style: TextStyle(
                         color: Colors.grey[600],
                         fontSize: 16, // Augmentation de la taille
@@ -139,15 +148,15 @@ class _DetailsPageState extends State<DetailsPage>
             ),
             const SizedBox(height: 30),
             buildDetailRow(Icons.calendar_today_outlined, 'Date de l\'Absence',
-                '10 Janvier 2025'),
+                '${student.date}'),
             const SizedBox(height: 10),
             buildDetailRow(
-                Icons.access_time_outlined, 'Horaire Précis', '10h30 - 12h30'),
+                Icons.access_time_outlined, 'Horaire Précis', '${student.time}'),
             const SizedBox(height: 10),
-            buildDetailRow(Icons.book_outlined, 'Matière', 'Mathématiques'),
+            buildDetailRow(Icons.book_outlined, 'Matière', '${student.subject}'),
             const SizedBox(height: 10),
             buildDetailRow(
-                Icons.person_outline, 'Enseignant', 'Mr. IDRISSI Mohammad'),
+                Icons.person_outline, 'Enseignant', '${student.teacher}'),
             const Spacer(),
             isJustifying
                 ? FadeTransition(
