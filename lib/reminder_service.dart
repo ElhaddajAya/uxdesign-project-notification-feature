@@ -40,7 +40,7 @@ class ReminderService {
     stopReminder();
     // Check if the current time is after 22:00
     final now = DateTime.now();
-    if (now.hour >= 22) {
+    if (now.hour >= 22 && now.hour < 8) {
       print("ReminderService: Reminders are not allowed after 22:00.");
       return;  // break, no remiders allowed after 22:00
     }
