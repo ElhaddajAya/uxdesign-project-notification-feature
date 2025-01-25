@@ -42,7 +42,78 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey, // Ajoute la clé de navigation
       debugShowCheckedModeBanner: false,
       title: 'TAALIM Notify',
-      home: const MyHomePage(),
+      home: const SplashScreen(),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Configure l'AnimationController
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2), // Durée de l'animation
+    );
+
+    // Configure l'animation de zoom progressif
+    _scaleAnimation = Tween<double>(begin: 0.3, end: 1.5)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    // Démarrer l'animation
+    _controller.forward();
+
+    // Redirection après 3 secondes
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const MyHomePage()),
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: ScaleTransition(
+          scale: _scaleAnimation, // Animation d'échelle
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/app_icon.png', height: 150),
+              const SizedBox(height: 20),
+              const Text(
+                'TAALIM Notify',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueGrey,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -78,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
               style: TextStyle(
                 fontSize: 20, 
                 fontWeight: FontWeight.bold, 
-                color: Colors.blueGrey.shade700
+                color: Colors.blueGrey.shade700,
               ),
             ),
           ],
@@ -91,8 +162,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         backgroundColor: const Color(0xFF1976D2),
         onPressed: () {
-            NotificationService.showNotification();
-          },
+          NotificationService.showNotification();
+        },
       ),
     );
   }
