@@ -191,7 +191,8 @@ class _DetailsPageState extends State<DetailsPage>
                         const SizedBox(width: 8),
                       IconButton(
                           icon: Icon(Icons.attach_file_outlined,
-                              color: Colors.blue[700], size: 26),
+                          color: Colors.blue[700], size: 26),
+                          tooltip: 'Joindre un fichier (ex: Certificat Médical)',
                           onPressed: () async {
                             // Simulate file attachment
                             FilePickerResult? result = await FilePicker.platform.pickFiles();

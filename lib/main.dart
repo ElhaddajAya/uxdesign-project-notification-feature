@@ -139,21 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
         foregroundColor: Colors.white,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/app_icon.png', height: 150),
-            const SizedBox(height: 20),
-            Text(
-              'Bienvenue à TAALIM Notify',
-              style: TextStyle(
-                fontSize: 20, 
-                fontWeight: FontWeight.bold, 
-                color: Colors.blueGrey.shade700,
-              ),
-            ),
-          ],
-        ),
+        child: Image.asset('assets/app_icon.png', height: 150),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(
