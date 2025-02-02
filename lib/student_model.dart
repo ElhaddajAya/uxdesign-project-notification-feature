@@ -34,7 +34,7 @@ class Student {
         id: 2287383,
         name: 'Ahmed BENNOUR',
         grade: '3ème Année - Collège',
-        subject: 'Sciences',
+        subject: 'Sciences de la Vie et de la Terre',
         date: '25 Janvier 2025',
         time: '14h30 - 16h30',
         teacher: 'Mr. ZAHRAOUI Yassine',
@@ -46,5 +46,5 @@ class Student {
 
 List<Student> students = [
   Student(id: 2287382, name: 'Kaoutar BENNOUR', grade: '2ème Année - Lycée', date: '25 Janvier 2025', time: '10h30 - 12h30', subject: 'Mathématiques', teacher: 'Mr. IDRISSI Mohammad'),
-  Student(id: 2287383, name: 'Ahmed BENNOUR', grade: '3ème Année - Collège', date: '25 Janvier 2025', time: '14h30 - 16h30', subject: 'Sciences', teacher: 'Mr. ZAHRAOUI Yassine'),
+  Student(id: 2287383, name: 'Ahmed BENNOUR', grade: '3ème Année - Collège', date: '25 Janvier 2025', time: '14h30 - 16h30', subject: 'Sciences de la Vie et de la Terre', teacher: 'Mr. ZAHRAOUI Yassine'),
 ];
