@@ -10,7 +10,6 @@ class DetailsPage extends StatefulWidget {
 
   DetailsPage({required this.studentId});
 
-
   @override
   _DetailsPageState createState() => _DetailsPageState();
 }
@@ -22,6 +21,12 @@ class _DetailsPageState extends State<DetailsPage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   bool _isInputEmpty = false;
+  File? _selectedFile;
+  String? _fileName;
+  
+  // Variables pour l'aperçu
+  Widget? _filePreview;
+  bool _isImage = false;
 
   late Student student;
 
@@ -33,26 +38,211 @@ class _DetailsPageState extends State<DetailsPage>
 
     // Initialisation de l'animation
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 300), // Durée de l'animation
-      vsync: this, // Fournit un ticker
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
     );
-    _fadeAnimation =
-        CurvedAnimation(parent: _animationController, curve: Curves.easeIn);
+    _fadeAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeIn);
   }
 
   @override
   void dispose() {
-    // Libération de l'AnimationController pour éviter les fuites
     _animationController.dispose();
     justificationController.dispose();
     super.dispose();
   }
 
+  // Méthode pour gérer la sélection et l'aperçu du fichier
+  Future<void> _handleFileSelection() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
+    );
+
+    if (result != null) {
+      setState(() {
+        _selectedFile = File(result.files.first.path!);
+        _fileName = result.files.first.name;
+        
+        // Vérifier si c'est une image
+        _isImage = ['jpg', 'jpeg', 'png'].contains(
+          result.files.first.extension?.toLowerCase()
+        );
+
+        // Créer l'aperçu
+        if (_isImage) {
+          _filePreview = Container(
+            height: 100,
+            width: 100,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.file(
+                _selectedFile!,
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        } else {
+          _filePreview = Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(8),
+              color: Colors.grey[200],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  result.files.first.extension?.toLowerCase() == 'pdf' 
+                    ? Icons.picture_as_pdf 
+                    : Icons.insert_drive_file,
+                  color: Colors.blue[700],
+                ),
+                SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    _fileName!,
+                    style: TextStyle(fontSize: 14),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.close, size: 16),
+                  onPressed: () {
+                    setState(() {
+                      _selectedFile = null;
+                      _fileName = null;
+                      _filePreview = null;
+                    });
+                  },
+                ),
+              ],
+            ),
+          );
+        }
+      });
+
+      Fluttertoast.showToast(
+        msg: "Fichier attaché: ${result.files.first.name}",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 2,
+        backgroundColor: const Color.fromARGB(255, 201, 225, 244),
+        textColor: Colors.blueGrey[700],
+        fontSize: 16.0
+      );
+    } else {
+      Fluttertoast.showToast(
+        msg: "Aucun fichier sélectionné",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 2,
+        backgroundColor: const Color.fromARGB(255, 255, 121, 111),
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    }
+  }
+
+  Widget _buildInputSection() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: justificationController,
+                cursorColor: Colors.blue[700],
+                decoration: InputDecoration(
+                  hintText: 'Justification',
+                  hintStyle: TextStyle(
+                    color: const Color.fromARGB(255, 126, 135, 139),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: _isInputEmpty ? Colors.red : Colors.blue.shade700),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: _isInputEmpty ? Colors.red : Colors.blue.shade700),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 12, horizontal: 16
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            IconButton(
+              icon: Icon(Icons.attach_file_outlined,
+                color: Colors.blue[700], size: 26),
+              tooltip: 'Joindre un fichier (ex: Certificat Médical)',
+              onPressed: _handleFileSelection,
+            ),
+            IconButton(
+              icon: Icon(Icons.send, color: Colors.blue[700], size: 26),
+              onPressed: () {
+                if (justificationController.text.isEmpty && _selectedFile == null) {
+                  setState(() {
+                    _isInputEmpty = true;
+                  });
+                  Fluttertoast.showToast(
+                    msg: "Veuillez saisir une justification ou joindre un fichier",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIosWeb: 2,
+                    backgroundColor: const Color.fromARGB(255, 255, 121, 111),
+                    textColor: Colors.white,
+                    fontSize: 16.0
+                  );
+                } else {
+                  print('Justification envoyée : ${justificationController.text}');
+                  if (_selectedFile != null) {
+                    print('Fichier envoyé : $_fileName');
+                  }
+
+                  Fluttertoast.showToast(
+                    msg: "Justification envoyée",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIosWeb: 2,
+                    backgroundColor: const Color.fromARGB(255, 201, 225, 244),
+                    textColor: Colors.blueGrey.shade700,
+                    fontSize: 16.0
+                  );
+
+                  justificationController.clear();
+                  setState(() {
+                    isJustifying = false;
+                    _selectedFile = null;
+                    _fileName = null;
+                    _filePreview = null;
+                    _animationController.reverse();
+                    _isInputEmpty = false;
+                  });
+                }
+              },
+            ),
+          ],
+        ),
+        if (_filePreview != null) ...[
+          SizedBox(height: 8),
+          _filePreview!,
+        ],
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    File? _selectedFile;
-    String? _fileName;
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -62,7 +252,7 @@ class _DetailsPageState extends State<DetailsPage>
         title: const Text(
           'Détails de l\'Absence',
           style: TextStyle(
-            fontSize: 18, // Augmentation de la taille
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -108,11 +298,11 @@ class _DetailsPageState extends State<DetailsPage>
             Row(
               children: [
                 const CircleAvatar(
-                  radius: 35, // Augmentation de la taille de l'avatar
+                  radius: 35,
                   backgroundColor: Color.fromARGB(255, 207, 234, 255),
                   child: Icon(
                     Icons.person,
-                    size: 50, // Augmentation de la taille de l'icône
+                    size: 50,
                     color: Color.fromARGB(255, 9, 60, 171),
                   ),
                 ),
@@ -123,14 +313,14 @@ class _DetailsPageState extends State<DetailsPage>
                     Text(
                       '${student.id}',
                       style: TextStyle(
-                        fontSize: 16, // Augmentation de la taille
+                        fontSize: 16,
                         color: Colors.grey[600],
                       ),
                     ),
                     Text(
                       '${student.name}',
                       style: TextStyle(
-                        fontSize: 20, // Augmentation de la taille
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.blueGrey.shade700,
                       ),
@@ -139,7 +329,7 @@ class _DetailsPageState extends State<DetailsPage>
                       '${student.grade}',
                       style: TextStyle(
                         color: Colors.grey[600],
-                        fontSize: 16, // Augmentation de la taille
+                        fontSize: 16,
                       ),
                     ),
                   ],
@@ -161,124 +351,7 @@ class _DetailsPageState extends State<DetailsPage>
             isJustifying
                 ? FadeTransition(
                     opacity: _fadeAnimation,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: justificationController,
-                            cursorColor: Colors.blue[700],
-                            decoration: InputDecoration(
-                              hintText: 'Justification',
-                              hintStyle: TextStyle(
-                                color: const Color.fromARGB(255, 126, 135, 139),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: _isInputEmpty ? Colors.red : Colors.blue.shade700),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: _isInputEmpty ? Colors.red : Colors.blue.shade700),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 16),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                      IconButton(
-                          icon: Icon(Icons.attach_file_outlined,
-                          color: Colors.blue[700], size: 26),
-                          tooltip: 'Joindre un fichier (ex: Certificat Médical)',
-                          onPressed: () async {
-                            // Simulate file attachment
-                            FilePickerResult? result = await FilePicker.platform.pickFiles();
-
-                            if (result != null) {
-                              PlatformFile file = result.files.first;
-                              setState(() {
-                                _selectedFile = File(file.path!);
-                                _fileName = file.name;
-                              });
-                              print('File attached: ${file.name}');
-                              
-                              // Display a Toast message
-                              Fluttertoast.showToast(
-                                msg: "Fichier attaché: ${file.name}",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
-                                timeInSecForIosWeb: 2,
-                                backgroundColor: const Color.fromARGB(255, 201, 225, 244),
-                                textColor: Colors.blueGrey[700],
-                                fontSize: 16.0
-                              );
-                            } else {
-                              // User canceled the picker
-                              Fluttertoast.showToast(
-                                msg: "Aucun fichier sélectionné",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
-                                timeInSecForIosWeb: 2,
-                                backgroundColor: const Color.fromARGB(255, 255, 121, 111),
-                                textColor: Colors.white,
-                                fontSize: 16.0
-                              );
-                            }
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.send,
-                              color: Colors.blue[700], size: 26),
-                          onPressed: () {
-                            // Action pour envoyer la justification
-                            print('Justification envoyée : ${justificationController.text}');
-                            
-                            // check if input is empty
-                            if (!justificationController.text.isEmpty) {
-                              // Display a Toast message
-                              Fluttertoast.showToast(
-                                msg: "Justification envoyée",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
-                                timeInSecForIosWeb: 2,
-                                backgroundColor: const Color.fromARGB(255, 201, 225, 244),
-                                textColor: Colors.blueGrey.shade700,
-                                fontSize: 16.0
-                              );
-
-                              // Clear the input field
-                              justificationController.clear();
-
-                              // Show the initial button "Justifier..."
-                              setState(() {
-                                isJustifying = false;
-                                _selectedFile = null;
-                                _fileName = null;
-                                _animationController.reverse();
-                                _isInputEmpty = false;
-                              });
-                            } else {
-                              setState(() {
-                                _isInputEmpty = true;
-                              });
-
-                              Fluttertoast.showToast(
-                                msg: "Veuillez saisir une justification",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
-                                timeInSecForIosWeb: 2,
-                                backgroundColor: const Color.fromARGB(255, 255, 121, 111),
-                                textColor: Colors.white,
-                                fontSize: 16.0
-                              );
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                    child: _buildInputSection(),
                   )
                 : ElevatedButton(
                     onPressed: () {
@@ -318,7 +391,7 @@ class _DetailsPageState extends State<DetailsPage>
             label: 'Compte',
           ),
         ],
-        currentIndex: 1, // Highlight "Historique"
+        currentIndex: 1,
         selectedItemColor: Colors.blue[700],
         unselectedItemColor: const Color.fromARGB(255, 126, 126, 126),
         onTap: (index) {
@@ -332,7 +405,7 @@ class _DetailsPageState extends State<DetailsPage>
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(icon, color: Colors.blueGrey.shade700, size: 24), 
+        Icon(icon, color: Colors.blueGrey.shade700, size: 24),
         const SizedBox(width: 16),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -341,14 +414,14 @@ class _DetailsPageState extends State<DetailsPage>
               title,
               style: TextStyle(
                 color: Colors.blueGrey.shade700,
-                fontSize: 18, 
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
               value,
               style: TextStyle(
-                fontSize: 16, 
+                fontSize: 16,
                 color: Colors.grey.shade600,
               ),
             ),
