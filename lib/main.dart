@@ -70,7 +70,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     // Configure l'animation de zoom progressif
-    _scaleAnimation = Tween<double>(begin: 0.3, end: 1.5)
+    _scaleAnimation = Tween<double>(begin: 0.3, end: 1)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     // Démarrer l'animation

@@ -71,8 +71,8 @@ class _DetailsPageState extends State<DetailsPage>
         // Créer l'aperçu
         if (_isImage) {
           _filePreview = Container(
-            height: 100,
-            width: 100,
+            height: 190,
+            // width: 190,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey),
               borderRadius: BorderRadius.circular(8),
